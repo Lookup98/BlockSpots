@@ -74,3 +74,19 @@ chrome.storage.local.get("lastTabId", ({ lastTabId }) => {
 
   closeBtn.addEventListener("click", () => window.close());
 });
+
+// Dark theme toggle logic
+const themeSwitch = document.getElementById('themeSwitch');
+
+chrome.storage.local.get('darkMode', data => {
+  if (data.darkMode) {
+    document.body.classList.add('dark');
+    themeSwitch.checked = true;
+  }
+});
+
+themeSwitch.addEventListener('change', () => {
+  const isDark = themeSwitch.checked;
+  document.body.classList.toggle('dark', isDark);
+  chrome.storage.local.set({ darkMode: isDark });
+});

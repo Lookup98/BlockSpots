@@ -1,27 +1,36 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title>Highlight Blocks</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 10px;
-      width: 300px;
-    }
-    input, button {
-      padding: 6px;
-      margin-top: 6px;
-      width: 100%;
-    }
-  </style>
-</head>
-<body>
-  <h2>Find & Highlight</h2>
-  <input type="text" id="keyword" placeholder="Enter keyword" />
-  <button id="highlightBtn">Highlight</button>
-  <button id="clearBtn">Clear</button>
-  <button id="closeBtn">Close</button>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kodular Block Finder</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🔍 Kodular Block Finder</h1>
+        <label class="theme-toggle" title="Toggle Dark Mode">
+          <input type="checkbox" id="themeSwitch" />
+          <span class="slider"></span>
+        </label>
+      </div>
+      <input
+        type="text"
+        id="keyword"
+        placeholder="Enter block keyword..."
+        autocomplete="off"
+      />
+      <div class="btn-group">
+        <button id="highlightBtn">Highlight</button>
+        <button id="clearBtn" class="secondary">Clear</button>
+      </div>
+      <button id="closeBtn" class="close">✖ Close</button>
+      <p class="tip">
+        Tip: Press <strong>Enter</strong> or <strong>Ctrl+Shift+Y</strong>
+      </p>
+    </div>
 
-  <script src="popup.js"></script>
-</body>
+    <script src="popup.js"></script>
+  </body>
 </html>
