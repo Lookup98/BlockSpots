@@ -1,10 +1,12 @@
 # BlockSpots
 
-[![Extension Icon](icon128.png)](icon128.png)
+---![Whisk_43f8304a67](https://github.com/user-attachments/assets/dfd21e58-b323-4089-a7a6-04bbf1cc86ee)
+
 
 📺 **Watch the demo video**: [https://youtu.be/9JejveXwCaY](https://youtu.be/9JejveXwCaY)
 
----
+
+
 
 ## Overview
 
