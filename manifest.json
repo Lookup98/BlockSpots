@@ -1,13 +1,13 @@
 {
   "manifest_version": 3,
-  "name": "Blockly Block Highlighter",
-  "version": "1.0",
+  "name": "BloclSpots",
+  "version": "3",
   "description": "Highlight blocks in Blockly by keyword.",
   "permissions": ["scripting", "tabs", "activeTab", "commands", "storage"],
 
   "action": {
     "default_popup": "popup.html",
-    "default_icon": "icon128.png"
+    "default_icon": "icon128.jpg"
   },
   "background": {
     "service_worker": "background.js"
