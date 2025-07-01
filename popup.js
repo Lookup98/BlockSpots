@@ -1,82 +1,76 @@
-const keywordInput = document.getElementById('keyword');
-const highlightBtn = document.getElementById('highlightBtn');
-const clearBtn     = document.getElementById('clearBtn');
-const closeBtn     = document.getElementById('closeBtn');
-const langSelect   = document.getElementById('langSelect');
-const titleText    = document.getElementById('titleText');
-
-const translations = {
-  en: {
-    title:       'Blockly Highlighter',
-    placeholder: 'Enter keyword...',
-    highlight:   'Highlight',
-    clear:       'Clear'
-  },
-  pt: {
-    title:       'Destacador de Blockly',
-    placeholder: 'Digite a palavra...',
-    highlight:   'Destacar',
-    clear:       'Desmarcar'
-  },
-  es: {
-    title:       'Resaltador Blockly',
-    placeholder: 'Ingrese palabra...',
-    highlight:   'Resaltar',
-    clear:       'Borrar'
+chrome.storage.local.get("lastTabId", ({ lastTabId }) => {
+  if (!lastTabId) {
+    alert("Target tab not found. Please activate the Kodular tab first.");
+    return;
   }
-};
 
-function applyLanguage(lang) {
-  const t = translations[lang] || translations.en;
-  titleText.textContent    = t.title;
-  keywordInput.placeholder = t.placeholder;
-  highlightBtn.textContent = t.highlight;
-  clearBtn.textContent     = t.clear;
-}
+  // Replace all injectAndSendMessage() logic inside here
+  const keywordInput = document.getElementById("keyword");
+  const highlightBtn = document.getElementById("highlightBtn");
+  const clearBtn = document.getElementById("clearBtn");
+  const closeBtn = document.getElementById("closeBtn");
 
-function sendMessage(action, payload = {}) {
-  chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-    chrome.tabs.sendMessage(
-      tabs[0].id,
-      { action, ...payload },
-      response => {
-        if (chrome.runtime.lastError) {
-          alert(`Error: ${chrome.runtime.lastError.message}`);
-        } else if ((action === 'highlight' || action === 'clear') 
-                   && response && response.status === 'error') {
-          alert(`Error: ${response.message}`);
-        }
+  window.onload = () => {
+    keywordInput.focus();
+  };
+
+  window.onunload = () => {
+    chrome.storage.local.get("lastTabId", ({ lastTabId }) => {
+      if (lastTabId) {
+        chrome.tabs.sendMessage(lastTabId, { action: "clear" });
       }
-    );
-  });
-}
+    });
+  };
 
-// Bind events
-highlightBtn.addEventListener('click', () => {
-  const kw = keywordInput.value.trim();
-  if (kw) sendMessage('highlight', { keyword: kw });
-});
-clearBtn.addEventListener('click', () => {
-  sendMessage('clear');
-  keywordInput.value = '';
-});
+  let injected = false;
 
-keywordInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    highlightBtn.click();
+  function injectAndSendMessage(action, payload = {}) {
+    if (!injected) {
+      chrome.scripting.executeScript(
+        {
+          target: { tabId: lastTabId },
+          files: ["content.js"],
+        },
+        () => {
+          if (chrome.runtime.lastError) {
+            alert(`Injection Error: ${chrome.runtime.lastError.message}`);
+          } else {
+            injected = true;
+            sendMessage(action, payload);
+          }
+        }
+      );
+    } else {
+      sendMessage(action, payload);
+    }
   }
-});
-langSelect.addEventListener('change', () => applyLanguage(langSelect.value));
-closeBtn.addEventListener('click', () => window.close());
 
-// Prevent ESC/blur closing
-window.addEventListener('keydown', e => {
-  if (e.key === 'Escape') e.stopPropagation(), e.preventDefault();
-});
-window.addEventListener('blur', e => {
-  e.stopPropagation(); e.preventDefault(); window.focus();
-});
+  function sendMessage(action, payload = {}) {
+    chrome.tabs.sendMessage(lastTabId, { action, ...payload }, (response) => {
+      if (chrome.runtime.lastError) {
+        alert(`Message Error: ${chrome.runtime.lastError.message}`);
+      } else if (response?.status === "error") {
+        alert(`Error: ${response.message}`);
+      }
+    });
+  }
 
-// Initialize
-applyLanguage('en');
+  highlightBtn.addEventListener("click", () => {
+    const keyword = keywordInput.value.trim();
+    if (keyword) injectAndSendMessage("highlight", { keyword });
+  });
+
+  clearBtn.addEventListener("click", () => {
+    injectAndSendMessage("clear");
+    keywordInput.value = "";
+  });
+
+  keywordInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      highlightBtn.click();
+    }
+  });
+
+  closeBtn.addEventListener("click", () => window.close());
+});

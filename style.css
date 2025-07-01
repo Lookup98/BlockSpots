@@ -1,0 +1,26 @@
+body {
+  font-family: sans-serif;
+  width: 300px;
+  padding: 10px;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  padding: 6px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+
+li:hover {
+  background-color: #f0f0f0;
+}
